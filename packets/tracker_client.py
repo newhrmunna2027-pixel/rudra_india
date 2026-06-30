@@ -146,8 +146,14 @@ class StatusBot:
                 
                 data = await self.reader.read(8192)
                 if not data: raise ConnectionError
-                
-                if data.hex().startswith('0f00'):
+
+                # IND (0eff, 0f14), BD (0f04) এবং SG (0f00) সবগুলোর জন্য ফিল্টার আপডেট করা হলো
+                hex_data = data.hex()
+                if (hex_data.startswith('0f00') or 
+                    hex_data.startswith('0eff') or 
+                    hex_data.startswith('0f04') or 
+                    hex_data.startswith('0f14')):
+    
                     status_info = parse_status_response(data)
                     if status_info and status_info['uid'] != self.account_uid:
                         t_uid = status_info['uid']
