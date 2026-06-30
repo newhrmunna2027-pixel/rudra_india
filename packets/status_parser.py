@@ -112,10 +112,11 @@ def create_status_check_packet(target_uid, key, iv):
         header_lenth = len(encrypted_packet_hex) // 2
         header_lenth_final = dec_to_hex(header_lenth)
         
-        if len(header_lenth_final) == 2: final_packet = "0F15000000" + header_lenth_final + encrypted_packet_hex
-        elif len(header_lenth_final) == 3: final_packet = "0F1500000" + header_lenth_final + encrypted_packet_hex
-        elif len(header_lenth_final) == 4: final_packet = "0F150000" + header_lenth_final + encrypted_packet_hex
-        else: final_packet = "0F15000" + header_lenth_final + encrypted_packet_hex
+        # 0F15 পরিবর্তন করে 0F14 করা হলো
+        if len(header_lenth_final) == 2: final_packet = "0F1400000" + header_lenth_final + encrypted_packet_hex
+        elif len(header_lenth_final) == 3: final_packet = "0F1400000" + header_lenth_final + encrypted_packet_hex
+        elif len(header_lenth_final) == 4: final_packet = "0F140000" + header_lenth_final + encrypted_packet_hex
+        else: final_packet = "0F14000" + header_lenth_final + encrypted_packet_hex
             
         return bytes.fromhex(final_packet)
     except: return None
