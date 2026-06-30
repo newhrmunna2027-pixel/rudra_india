@@ -27,7 +27,7 @@ class FF_CLient:
         self.start_task = None  
         self.active_spam_tasks = []
         self.is_running = True
-        self.region = "BD" 
+        self.region = "IND" 
         self.key = None
         self.iv = None
         self.device = DEVICE_PROFILES[(int(bot_id) - 1) % len(DEVICE_PROFILES)]
