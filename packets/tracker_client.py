@@ -146,29 +146,39 @@ class StatusBot:
                 
                 data = await self.reader.read(8192)
                 if not data: raise ConnectionError
-
-                # IND (0eff, 0f14), BD (0f04) এবং SG (0f00) সবগুলোর জন্য ফিল্টার আপডেট করা হলো
+                
                 hex_data = data.hex()
-                if (hex_data.startswith('0f00') or 
-                    hex_data.startswith('0eff') or 
-                    hex_data.startswith('0f04') or 
-                    hex_data.startswith('0f14')):
-    
-                    status_info = parse_status_response(data)
-                    if status_info and status_info['uid'] != self.account_uid:
-                        t_uid = status_info['uid']
-                        l_uid = status_info['leader']
+                status_found = False
+                
+                # 🚀 Robust Sliding Buffer Search: বাফারের যেকোনো জায়গায় IND, BD বা SG এর স্ট্যাটাস হেডার খুঁজবে
+                for header in ['0eff0000', '0f000000', '0f040000', '0f140000']:
+                    idx = hex_data.find(header)
+                    if idx != -1:
+                        # হেডার পজিশন থেকে প্যাকেটটি আলাদা করে পার্স করা হচ্ছে
+                        packet_bytes = bytes.fromhex(hex_data[idx:])
+                        status_info = parse_status_response(packet_bytes)
                         
-                        state.global_info_data[t_uid] = {
-                            "status": status_info['status'], "leader": l_uid,
-                            "squad": status_info['squad_size'], "room_id": status_info['room_id'],
-                            "last_update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                        }
-                        
-                        if status_info['status'] != "OFFLINE" and l_uid.isdigit() and len(l_uid) > 5:
-                            if t_uid not in state.global_leader_history: state.global_leader_history[t_uid] = {}
-                            state.global_leader_history[t_uid][l_uid] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            except Exception:
+                        if status_info and status_info['uid'] != self.account_uid:
+                            t_uid = status_info['uid']
+                            l_uid = status_info['leader']
+                            
+                            state.global_info_data[t_uid] = {
+                                "status": status_info['status'], 
+                                "leader": l_uid,
+                                "squad": status_info['squad_size'], 
+                                "room_id": status_info['room_id'],
+                                "last_update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            }
+                            
+                            if status_info['status'] != "OFFLINE" and l_uid.isdigit() and len(l_uid) > 5:
+                                if t_uid not in state.global_leader_history: 
+                                    state.global_leader_history[t_uid] = {}
+                                state.global_leader_history[t_uid][l_uid] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            
+                            status_found = True
+                            break # সফলভাবে পার্স হলে লুপ থেকে বের হবে
+                            
+            except Exception as e:
                 if self.writer:
                     try: self.writer.close()
                     except Exception: pass
