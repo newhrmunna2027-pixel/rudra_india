@@ -55,11 +55,11 @@ async def Sequential_VV_Watcher_Async():
             for u in to_login:
                 state.PENDING_LOGINS.add(u)
                 p = current_accounts[u]
-                reg = "BD"
+                reg = "IND"
                 pwd = p
                 if isinstance(p, dict):
                     pwd = p.get("password", p)
-                    reg = p.get("region", "BD")
+                    reg = p.get("region", "IND")
                 
                 print(f" [+] Queued Sequential Login for: {u}")
                 
