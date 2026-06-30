@@ -80,7 +80,7 @@ def Fake_Profile_Join(target_uid, region, K, V):
         1: 33, 
         2: {
             1: int(target_uid),
-            2: region if region else "BD",
+            2: region if region else "IND",
             3: int(fake_team_id),  
             4: 2,                  
             5: bytes([1, 7, 9, 10, 11, 18, 25, 26, 32]), 
