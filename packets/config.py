@@ -13,7 +13,7 @@ DEVICE_PROFILES = [
      "height": 2400,
      "dpi": "420",
      "ram": 8192,
-     "operator": "Grameenphone"
+     "operator": "Vi"
     },
   
     {
@@ -24,7 +24,7 @@ DEVICE_PROFILES = [
      "opengl": "OpenGL ES 3.2 V@502.0",
      "width": 1080, "height": 2400,
      "dpi": "440", "ram": 6144,
-     "operator": "Robi"
+     "operator": "Airtel"
     },
   
     {
@@ -35,6 +35,6 @@ DEVICE_PROFILES = [
      "opengl": "OpenGL ES 3.2 V@512.0",
      "width": 1440, "height": 3216,
      "dpi": "520", "ram": 12288,
-     "operator": "Banglalink"
+     "operator": "Jio"
     }
 ]
